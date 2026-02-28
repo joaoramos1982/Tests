@@ -17,12 +17,12 @@ namespace AppStoreConnect.IpaUploader;
 /// </remarks>
 public class AppStoreConnectUploader : IDisposable
 {
-    private const string BaseUrl = "https://contentdelivery.itunes.apple.com/WebObjects/MZLabelService.woa/wo/";
     private const string AppStoreConnectApiBaseUrl = "https://api.appstoreconnect.apple.com/v1";
 
     private readonly AppStoreConnectConfig _config;
     private readonly JwtTokenService _jwtService;
     private readonly HttpClient _httpClient;
+    private readonly bool _ownsHttpClient;
     private bool _disposed;
 
     /// <summary>
@@ -30,21 +30,28 @@ public class AppStoreConnectUploader : IDisposable
     /// </summary>
     /// <param name="config">App Store Connect API credentials and settings.</param>
     public AppStoreConnectUploader(AppStoreConnectConfig config)
-        : this(config, new HttpClient())
+        : this(config, new HttpClient(), ownsHttpClient: true)
     {
     }
 
     /// <summary>
     /// Initialises the uploader with the provided configuration and an existing <see cref="HttpClient"/>.
     /// Useful for unit testing or when sharing a single <see cref="HttpClient"/> instance.
+    /// The provided <paramref name="httpClient"/> will NOT be disposed by this class.
     /// </summary>
     /// <param name="config">App Store Connect API credentials and settings.</param>
     /// <param name="httpClient">HTTP client to use for all API requests.</param>
     public AppStoreConnectUploader(AppStoreConnectConfig config, HttpClient httpClient)
+        : this(config, httpClient, ownsHttpClient: false)
+    {
+    }
+
+    private AppStoreConnectUploader(AppStoreConnectConfig config, HttpClient httpClient, bool ownsHttpClient)
     {
         _config = config ?? throw new ArgumentNullException(nameof(config));
         _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
         _jwtService = new JwtTokenService(config);
+        _ownsHttpClient = ownsHttpClient;
     }
 
     /// <summary>
@@ -116,7 +123,7 @@ public class AppStoreConnectUploader : IDisposable
         {
             data = new
             {
-                type = "bundleIds",
+                type = "uploadRequests",
                 attributes = new
                 {
                     name = Path.GetFileNameWithoutExtension(fileName),
@@ -262,7 +269,8 @@ public class AppStoreConnectUploader : IDisposable
     {
         if (_disposed) return;
         _disposed = true;
-        _httpClient.Dispose();
+        if (_ownsHttpClient)
+            _httpClient.Dispose();
     }
 
     // -------------------------------------------------------------------------
