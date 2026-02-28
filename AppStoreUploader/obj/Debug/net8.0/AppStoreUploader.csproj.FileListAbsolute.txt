@@ -1,0 +1,12 @@
+/home/runner/work/Tests/Tests/AppStoreUploader/bin/Debug/net8.0/AppStoreUploader.deps.json
+/home/runner/work/Tests/Tests/AppStoreUploader/bin/Debug/net8.0/AppStoreUploader.dll
+/home/runner/work/Tests/Tests/AppStoreUploader/bin/Debug/net8.0/AppStoreUploader.pdb
+/home/runner/work/Tests/Tests/AppStoreUploader/obj/Debug/net8.0/AppStoreUploader.GeneratedMSBuildEditorConfig.editorconfig
+/home/runner/work/Tests/Tests/AppStoreUploader/obj/Debug/net8.0/AppStoreUploader.AssemblyInfoInputs.cache
+/home/runner/work/Tests/Tests/AppStoreUploader/obj/Debug/net8.0/AppStoreUploader.AssemblyInfo.cs
+/home/runner/work/Tests/Tests/AppStoreUploader/obj/Debug/net8.0/AppStoreUploader.csproj.CoreCompileInputs.cache
+/home/runner/work/Tests/Tests/AppStoreUploader/obj/Debug/net8.0/AppStoreUploader.sourcelink.json
+/home/runner/work/Tests/Tests/AppStoreUploader/obj/Debug/net8.0/AppStoreUploader.dll
+/home/runner/work/Tests/Tests/AppStoreUploader/obj/Debug/net8.0/refint/AppStoreUploader.dll
+/home/runner/work/Tests/Tests/AppStoreUploader/obj/Debug/net8.0/AppStoreUploader.pdb
+/home/runner/work/Tests/Tests/AppStoreUploader/obj/Debug/net8.0/ref/AppStoreUploader.dll
