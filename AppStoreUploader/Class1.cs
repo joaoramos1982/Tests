@@ -13,16 +13,17 @@ public sealed class AppStoreUploadApi
             throw new FileNotFoundException("IPA file was not found.", request.IpaFilePath);
         if (!string.Equals(Path.GetExtension(request.IpaFilePath), ".ipa", StringComparison.OrdinalIgnoreCase))
             throw new ArgumentException("File must have .ipa extension.", nameof(request));
-        if (string.IsNullOrWhiteSpace(request.AppleId))
-            throw new ArgumentException("Apple ID is required.", nameof(request));
-        if (string.IsNullOrWhiteSpace(request.AppSpecificPassword))
-            throw new ArgumentException("App-specific password is required.", nameof(request));
+        if (string.IsNullOrWhiteSpace(request.ApiKey))
+            throw new ArgumentException("App Store Connect API key is required.", nameof(request));
+        if (string.IsNullOrWhiteSpace(request.ApiIssuer))
+            throw new ArgumentException("App Store Connect API issuer is required.", nameof(request));
 
         var startInfo = new ProcessStartInfo("xcrun")
         {
             RedirectStandardOutput = true,
             RedirectStandardError = true,
-            UseShellExecute = false
+            UseShellExecute = false,
+            CreateNoWindow = true
         };
 
         startInfo.ArgumentList.Add("altool");
@@ -31,10 +32,10 @@ public sealed class AppStoreUploadApi
         startInfo.ArgumentList.Add("ios");
         startInfo.ArgumentList.Add("--file");
         startInfo.ArgumentList.Add(request.IpaFilePath);
-        startInfo.ArgumentList.Add("--username");
-        startInfo.ArgumentList.Add(request.AppleId);
-        startInfo.ArgumentList.Add("--password");
-        startInfo.ArgumentList.Add(request.AppSpecificPassword);
+        startInfo.ArgumentList.Add("--apiKey");
+        startInfo.ArgumentList.Add(request.ApiKey);
+        startInfo.ArgumentList.Add("--apiIssuer");
+        startInfo.ArgumentList.Add(request.ApiIssuer);
 
         using var process = new Process { StartInfo = startInfo };
         if (!process.Start())
@@ -43,10 +44,7 @@ public sealed class AppStoreUploadApi
         var stdOutTask = process.StandardOutput.ReadToEndAsync(cancellationToken);
         var stdErrTask = process.StandardError.ReadToEndAsync(cancellationToken);
 
-        try
-        {
-            await process.WaitForExitAsync(cancellationToken);
-        }
+        try { await Task.WhenAll(process.WaitForExitAsync(cancellationToken), stdOutTask, stdErrTask); }
         catch (OperationCanceledException)
         {
             if (!process.HasExited)
@@ -61,6 +59,6 @@ public sealed class AppStoreUploadApi
     }
 }
 
-public sealed record AppStoreUploadRequest(string IpaFilePath, string AppleId, string AppSpecificPassword);
+public sealed record AppStoreUploadRequest(string IpaFilePath, string ApiKey, string ApiIssuer);
 
 public sealed record AppStoreUploadResult(bool Success, int ExitCode, string Output, string Error);
