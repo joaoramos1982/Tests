@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/AppStoreConnect.IpaUploader/AppStoreConnect.IpaUploader.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/AppStoreConnect.IpaUploader.Tests/AppStoreConnect.IpaUploader.Tests.csproj" />
+  </Folder>
+</Solution>
